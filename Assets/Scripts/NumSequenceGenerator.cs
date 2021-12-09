@@ -165,7 +165,8 @@ namespace HB.InfiniteSequence
         public static IEnumerator<Vector3> GetIterator(Vector3 start, Vector3 size)
         {
             var cur  = Vector3.zero;
-            var prev = Vector3.zero;
+            var prev1 = Vector3.zero;
+            var prev2 = Vector3.zero;
             var sum  = start;
             var tSum = sum;
 
@@ -175,7 +176,9 @@ namespace HB.InfiniteSequence
                 {
                     cur = _dirs[Random.Range(0, _dirs.Count)];
                     // no back movement
-                    if ((cur - prev).sqrMagnitude < float.Epsilon || Mathf.Abs((cur - prev).sqrMagnitude - 4f) < float.Epsilon) { continue; }
+                    if ((cur - prev1).sqrMagnitude < float.Epsilon ||
+                        (cur - prev2).sqrMagnitude < float.Epsilon ||
+                        Mathf.Abs((cur - prev1).sqrMagnitude - 4f) < float.Epsilon) { continue; }
                     tSum = sum + cur;
                     // stay inside
                     if (tSum.x < 0 || tSum.y < 0 || tSum.z < 0 ||
@@ -184,7 +187,8 @@ namespace HB.InfiniteSequence
                     break;
                 }
 
-                prev = cur;
+                prev2 = -prev1; // this minus is the thing
+                prev1 = cur;
                 sum  = tSum;
                 yield return cur;
             }
